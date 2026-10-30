@@ -1,16 +1,12 @@
 # QuickWallet
 
-**双击电源键，快速打开 Google 钱包付款界面。**
-
-适用于 HyperOS 4 的 LSPosed 模块。
-
-## 简介
-
 QuickWallet 是一个适用于 HyperOS 4 的 LSPosed 模块，用于将双击电源键的操作替换为打开 Google 钱包。
 
 HyperOS 默认只允许将双击电源键设置为启动相机或小米钱包。安装本模块后，可以直接通过双击电源键打开 Google 钱包的付款卡片页面，无需先进入应用首页。
 
 支持亮屏、息屏和锁屏状态。
+
+<img width="250" alt="Screenshot_2026-10-29-23-50-10-129_com google android apps walletnfcrel_1793340771100edit" src="https://github.com/user-attachments/assets/6152adb9-2ea7-454f-89ee-64e6cf8f2d5b" />
 
 ## 功能
 
