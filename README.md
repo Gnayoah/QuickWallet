@@ -1,25 +1,94 @@
 # QuickWallet
 
-QuickWallet 是一个适用于 HyperOS 4 的 LSPosed 模块，用于将双击电源键的操作替换为打开 Google 钱包。
+ [简体中文](#简体中文)
+
+QuickWallet is an LSPosed module for HyperOS 4 that replaces the double-press power button shortcut with Google Wallet.
+
+By default, HyperOS only allows the double-press power button shortcut to launch the camera or Xiaomi Wallet. With QuickWallet, you can open the Google Wallet payment cards screen directly by double-pressing the power button, without navigating through the app's home screen.
+
+It works when the screen is on, off, or locked.
+
+## Features
+
+- **Direct access to payment cards**: Opens the Google Wallet payment cards screen directly, without additional navigation.
+- **Lock screen support**: Allows the payment screen to appear over the lock screen. Actual payments still follow Google Wallet's authentication requirements.
+- **Duplicate launch prevention**: Uses an 800ms cooldown to prevent multiple Hooks from launching Google Wallet simultaneously.
+- **Lightweight design**: Requires no additional permissions, standalone interface, or background service. The APK is approximately 20 KB.
+
+## Screenshot
+<img width="250" alt="QuickWallet Screenshot" src="https://github.com/user-attachments/assets/6152adb9-2ea7-454f-89ee-64e6cf8f2d5b" />
+
+## Technical Implementation
+
+QuickWallet primarily Hooks methods related to power button shortcuts within `system_server` to override their default behavior.
+
+| Hook Target | Function |
+| --- | --- |
+| `MiuiSingleKeyRule` / `PowerKeyRule` | Intercepts `getFunction("double_click_power_key")` to modify the double-press power button shortcut |
+| `ShortCutActionsUtils.launchDefaultWallet` | Intercepts the default wallet launch method and redirects it to Google Wallet |
+| `ActivityRecord.canShowWhenLocked` | Allows the Google Wallet payment screen to appear over the lock screen |
+| `PhoneWindowManager.powerPress` | Provides compatibility with AOSP power button handling by detecting double-press actions and launching Google Wallet |
+
+The module first attempts to launch Google Wallet's `PresentationModeActivity` to display the payment cards screen directly.
+
+If this Activity is unavailable in the installed Google Wallet version, the module falls back to the app's default launch Activity.
+
+Each Hook operates independently. If a method is unavailable on a particular system version, the other Hooks can continue functioning.
+
+## Logs
+
+If the module does not work as expected, search for `QuickWallet` in the LSPosed logs.
+
+When the Hooks are successfully installed, the logs should contain entries similar to:
+
+```text
+QuickWallet: getFunction hooked x1
+QuickWallet: launchDefaultWallet hooked x1
+QuickWallet: canShowWhenLocked hooked
+QuickWallet: com.android.server.policy.PhoneWindowManager powerPress hooked x1
+```
+
+Common log messages:
+
+| Log Message | Description |
+| --- | --- |
+| `hooked x0` / `not found` | The target method could not be found, possibly due to system version differences |
+| `Google Wallet is not installed` | Google Wallet is not installed on the device |
+| `launch failed` | Failed to launch Google Wallet. Check the detailed exception logs |
+
+## Disclaimer
+
+This project is intended for educational and technical research purposes only. It is not officially affiliated with Google, Xiaomi, or the LSPosed project.
+
+The module Hooks system framework components, and compatibility may vary across devices and system versions. Please evaluate the potential risks before using it.
+
+## License
+
+This project is licensed under the [GNU General Public License v3.0 (GPL-3.0)](https://www.gnu.org/licenses/gpl-3.0.html).
+
+## Acknowledgements
+
+This project was developed with AI assistance from Claude and OpenAI Codex.
+
+---
+
+# 简体中文
+
+QuickWallet 是一个适用于 HyperOS 4 的 LSPosed 模块，用于将双击电源键的快捷操作替换为打开 Google 钱包。
 
 HyperOS 默认只允许将双击电源键设置为启动相机或小米钱包。安装本模块后，可以直接通过双击电源键打开 Google 钱包的付款卡片页面，无需先进入应用首页。
 
 支持亮屏、息屏和锁屏状态。
 
-<img width="250" alt="Screenshot_2026-10-29-23-50-10-129_com google android apps walletnfcrel_1793340771100edit" src="https://github.com/user-attachments/assets/6152adb9-2ea7-454f-89ee-64e6cf8f2d5b" />
-
 ## 功能
 
-- **快速打开付款页面**：直接启动 Google 钱包的付款卡片界面，无需手动选择。
+- **快速打开付款页面**：直接启动 Google 钱包的付款卡片界面，无需手动进入。
 - **支持锁屏启动**：允许付款页面显示在锁屏上方，实际支付仍遵循 Google 钱包的身份验证要求。
 - **避免重复启动**：设置 800ms 触发间隔，防止多个 Hook 同时执行导致钱包重复打开。
 - **轻量化设计**：无需额外权限，没有独立界面和后台服务，APK 大小约 20 KB。
 
-## 兼容性
-
-- HyperOS 4
-- LSPosed
-
+## 截图
+<img width="250" alt="QuickWallet Screenshot" src="https://github.com/user-attachments/assets/6152adb9-2ea7-454f-89ee-64e6cf8f2d5b" />
 
 ## 技术实现
 
@@ -30,7 +99,7 @@ HyperOS 默认只允许将双击电源键设置为启动相机或小米钱包。
 | `MiuiSingleKeyRule` / `PowerKeyRule` | 拦截 `getFunction("double_click_power_key")`，修改双击电源键对应的快捷操作 |
 | `ShortCutActionsUtils.launchDefaultWallet` | 拦截系统默认钱包启动方法，改为启动 Google 钱包 |
 | `ActivityRecord.canShowWhenLocked` | 允许 Google 钱包的付款页面显示在锁屏上方 |
-| `PhoneWindowManager.powerPress` | 兼容 AOSP 电源键处理逻辑，在检测到双击操作时启动钱包 |
+| `PhoneWindowManager.powerPress` | 兼容 AOSP 电源键处理逻辑，在检测到双击操作时启动 Google 钱包 |
 
 模块会优先尝试启动 Google 钱包的 `PresentationModeActivity`，以直接显示付款卡片页面。
 
@@ -42,7 +111,7 @@ HyperOS 默认只允许将双击电源键设置为启动相机或小米钱包。
 
 如果模块没有正常工作，可以在 LSPosed 日志中搜索 `QuickWallet`。
 
-正常加载时，日志中会包含类似内容：
+正常安装 Hook 后，日志中会包含类似内容：
 
 ```text
 QuickWallet: getFunction hooked x1
@@ -58,8 +127,6 @@ QuickWallet: com.android.server.policy.PhoneWindowManager powerPress hooked x1
 | `hooked x0` / `not found` | 未找到对应方法，可能是系统版本差异 |
 | `Google Wallet is not installed` | 设备未安装 Google 钱包 |
 | `launch failed` | Google 钱包启动失败，需要查看详细异常日志 |
-
-
 
 ## 免责声明
 
