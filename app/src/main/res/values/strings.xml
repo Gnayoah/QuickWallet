@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">QuickWallet</string>
+    <string name="module_desc">双击电源键打开 Google 钱包（HyperOS）</string>
+</resources>

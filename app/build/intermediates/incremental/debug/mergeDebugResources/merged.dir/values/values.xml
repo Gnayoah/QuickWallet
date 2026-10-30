@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="xposed_scope">
+        <item>android</item>
+    </string-array>
+    <color name="ic_launcher_background">#1A73E8</color>
+    <string name="app_name">QuickWallet</string>
+    <string name="module_desc">双击电源键打开 Google 钱包（HyperOS）</string>
+</resources>
